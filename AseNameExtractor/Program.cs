@@ -11,6 +11,8 @@ namespace AseNameExtractor
 {
     internal static class Program
     {
+        private const string DictionariesDirectory = "Dictionaries";
+
         public static int Main(string[] args)
         {
             var gameDirectory = CommandLine.GetOption("--game-dir", args);
@@ -86,16 +88,18 @@ namespace AseNameExtractor
             Console.WriteLine();
             if (answer != 'y') return 0;
 
+            if (!Directory.Exists(DictionariesDirectory)) Directory.CreateDirectory(DictionariesDirectory);
+
             if (unitDictionary.Count > 0)
             {
-                const string unitDictionaryFile = "unit-dictionary.json";
+                var unitDictionaryFile = Path.Combine(DictionariesDirectory, "unit-dictionary.json");
                 File.WriteAllText(unitDictionaryFile, JsonSerializer.Serialize(unitDictionary));
                 Console.WriteLine($"=> Saved unit names to {unitDictionaryFile}");
             }
 
             if (attachmentDictionary.Count <= 0) return 0;
 
-            const string attachmentDictionaryFile = "attachment-dictionary.json";
+            var attachmentDictionaryFile = Path.Combine(DictionariesDirectory, "attachment-dictionary.json");
             File.WriteAllText(attachmentDictionaryFile, JsonSerializer.Serialize(attachmentDictionary));
             Console.WriteLine($"=> Saved attachment names to {attachmentDictionaryFile}");
 
