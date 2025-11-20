@@ -2,6 +2,8 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AseCore", "AseCore\AseCore.csproj", "{72BF30C4-9D65-4D9B-A5FC-F6EE55545EF7}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AseCoreLib", "AseNameExtractor\AseCoreLib.csproj", "{72BF30C4-9D65-4D9B-A5FC-F6EE55545EF8}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AseNameExtractor", "AseNameExtractor\AseNameExtractor.csproj", "{9C529264-CEC8-4463-87AC-7657C82D2DD6}"
 EndProject
 Global
@@ -14,6 +16,10 @@ Global
 		{72BF30C4-9D65-4D9B-A5FC-F6EE55545EF7}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{72BF30C4-9D65-4D9B-A5FC-F6EE55545EF7}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{72BF30C4-9D65-4D9B-A5FC-F6EE55545EF7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72BF30C4-9D65-4D9B-A5FC-F6EE55545EF8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72BF30C4-9D65-4D9B-A5FC-F6EE55545EF8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72BF30C4-9D65-4D9B-A5FC-F6EE55545EF8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72BF30C4-9D65-4D9B-A5FC-F6EE55545EF8}.Release|Any CPU.Build.0 = Release|Any CPU
 		{9C529264-CEC8-4463-87AC-7657C82D2DD6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{9C529264-CEC8-4463-87AC-7657C82D2DD6}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9C529264-CEC8-4463-87AC-7657C82D2DD6}.Release|Any CPU.ActiveCfg = Release|Any CPU

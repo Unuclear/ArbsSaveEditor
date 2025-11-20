@@ -88,9 +88,9 @@
         <Compile Include="Properties\AssemblyInfo.cs"/>
     </ItemGroup>
     <ItemGroup>
-        <ProjectReference Include="..\AseCore\AseCore.csproj">
-            <Project>{72bf30c4-9d65-4d9b-a5fc-f6ee55545ef7}</Project>
-            <Name>AseCore</Name>
+        <ProjectReference Include="AseCoreLib.csproj">
+            <Project>{72bf30c4-9d65-4d9b-a5fc-f6ee55545ef8}</Project>
+            <Name>AseCoreLib</Name>
         </ProjectReference>
     </ItemGroup>
     <ItemGroup>
