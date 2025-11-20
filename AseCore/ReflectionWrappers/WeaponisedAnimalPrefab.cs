@@ -53,8 +53,6 @@ namespace AseCore.ReflectionWrappers
                 Attachments.Add(new Attachment(_properties, key));
         }
 
-        public object PrefabObject => Instance;
-
         public string Name
         {
             get => _name;
@@ -179,7 +177,7 @@ namespace AseCore.ReflectionWrappers
             var sb = new StringBuilder(_name)
                 .AppendLine(":")
                 .Append("  Base unit: ")
-                .Append(UnitDictionary.TryGetValue(_unitPrefabIndex, out var baseUnitName) ? baseUnitName : "Unknown")
+                .Append(GetUnitName(_unitPrefabIndex))
                 .Append(" (")
                 .Append(_unitPrefabIndex)
                 .AppendLine(")")
@@ -224,7 +222,7 @@ namespace AseCore.ReflectionWrappers
             var sb = new StringBuilder(Type.FullName)
                 .AppendLine(" {")
                 .Append("  prefabName: ")
-                .Append(Name)
+                .Append(_name)
                 .AppendLine(",")
                 .Append("  animalRecord: ")
                 .Append(_animalRecord.Type.FullName)
@@ -271,9 +269,14 @@ namespace AseCore.ReflectionWrappers
 
         private static object CheckIfInstanceIsWap(object instance)
         {
-            if (instance.GetType().Name == "WeaponisedAnimalPrefab") return instance;
+            return instance.GetType().Name == "WeaponisedAnimalPrefab"
+                ? instance
+                : throw new ArgumentException("Instance is not a WeaponisedAnimalPrefab!");
+        }
 
-            throw new ArgumentException("Instance is not a WeaponisedAnimalPrefab!");
+        internal static string GetUnitName(int unitPrefabIndex)
+        {
+            return UnitDictionary.TryGetValue(unitPrefabIndex, out var baseUnitName) ? baseUnitName : "Unknown";
         }
 
         public enum PrefabAiMode

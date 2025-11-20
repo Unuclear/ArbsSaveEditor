@@ -14,6 +14,13 @@ namespace AseCore
             return null;
         }
 
+        public static void PrintAndPause(string message)
+        {
+            Console.WriteLine(message);
+            Console.Write("\nPress enter to return...");
+            Console.ReadLine();
+        }
+
         public static int NumericMenu<T>(string title, T[] options)
         {
             var optionsText = new StringBuilder(title)
@@ -40,7 +47,7 @@ namespace AseCore
                         return -1;
                     case "help":
                         Console.WriteLine(
-                            "Type in a number corresponding to a menu entry above to traverse the menu, \"back\" to leave menu and \"exit\" to exit the program."
+                            "Type in a number corresponding to a menu entry above to traverse the menu, \"back\" to leave the menu and \"exit\" to exit the program."
                         );
                         continue;
                 }

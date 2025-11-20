@@ -13,6 +13,8 @@ namespace AseCore
 
         private static string _assemblyDllPath;
 
+        private static string _saveFile;
+
         public static string GameDirectory { get; set; }
 
         public static string FindGameDirectory()
@@ -130,7 +132,7 @@ namespace AseCore
         {
             get
             {
-                if (GameDirectory == null) throw new Exception("Set the GameDirectory first!");
+                if (GameDirectory == null) throw new InvalidOperationException("Set the GameDirectory first!");
                 if (_assemblyDllPath != null) return _assemblyDllPath;
 
                 _assemblyDllPath = Path.Combine(
@@ -143,7 +145,19 @@ namespace AseCore
             }
         }
 
-        public static WapFile[] GetAllWeaponisedAnimalPrefabFiles()
+        public static string SaveFile
+        {
+            get
+            {
+                if (DataDirectory == null) throw new InvalidOperationException("Set the DataDirectory first!");
+                if (_saveFile != null) return _saveFile;
+
+                _saveFile = Path.Combine(DataDirectory, "arbs_steam");
+                return _saveFile;
+            }
+        }
+
+        public static WapFile[] LoadAllWeaponisedAnimalPrefabFiles()
         {
             if (DataDirectory == null) throw new InvalidOperationException("Set the data directory first!");
 

@@ -13,8 +13,8 @@ namespace AseCore.ReflectionWrappers
             Type = instance.GetType();
         }
 
-        protected internal object Instance { get; }
-        protected internal Type Type { get; }
+        public object Instance { get; }
+        public Type Type { get; }
 
         private FieldInfo GetFieldInfo(string name)
         {
@@ -32,9 +32,9 @@ namespace AseCore.ReflectionWrappers
             if (fieldInfo != null) return fieldInfo.GetValue(Instance);
 
             var propertyInfo = GetPropertyInfo(fieldName);
-            if (propertyInfo != null) return propertyInfo.GetValue(Instance);
-
-            throw new MissingMemberException(fieldName, fieldName);
+            return propertyInfo != null
+                ? propertyInfo.GetValue(Instance)
+                : throw new MissingMemberException(fieldName, fieldName);
         }
 
         protected ReflectedObject GetAsReflectedObject(string fieldName)
