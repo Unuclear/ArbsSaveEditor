@@ -49,9 +49,11 @@ namespace AseCore.ReflectionWrappers
             _sizeFactor = _properties[4] / 100_000m;
 
             Attachments = new List<Attachment>();
-            for (var key = 100; _properties.ContainsKey(key); key += 11)
+            for (var key = Attachment.FirstKey; _properties.ContainsKey(key); key += Attachment.KeyOffset)
                 Attachments.Add(new Attachment(_properties, key));
         }
+
+        public object PrefabObject => Instance;
 
         public string Name
         {
@@ -138,10 +140,43 @@ namespace AseCore.ReflectionWrappers
 
         public List<Attachment> Attachments { get; }
 
+        public void CleanUpAttachments()
+        {
+            var removedAttachments = Attachments.Where(attachment => attachment.Removed).ToArray();
+
+            foreach (var attachment in removedAttachments)
+            {
+                // Remove from attachment list
+                Attachments.Remove(attachment);
+
+                // Delete from prefab properties
+                for (var offset = 0; offset < Attachment.KeyOffset; offset++)
+                    _properties.Remove(attachment.Key + offset);
+            }
+
+            // Renumber remaining attachments
+            for (var i = 0; i < Attachments.Count; i++)
+            {
+                var attachment = Attachments[i];
+                var currentKey = attachment.Key;
+                var newKey = Attachment.FirstKey + i * Attachment.KeyOffset;
+                if (currentKey == newKey) continue;
+
+                for (var offset = 0; offset < Attachment.KeyOffset; offset++)
+                {
+                    if (!_properties.TryGetValue(currentKey + offset, out var value)) continue;
+
+                    _properties.Remove(currentKey + offset);
+                    _properties[newKey + offset] = value;
+                }
+
+                attachment.Key = newKey;
+            }
+        }
+
         public override string ToString()
         {
-            var sb = new StringBuilder("[WeaponisedAnimalPrefab] ")
-                .Append(_name)
+            var sb = new StringBuilder(_name)
                 .AppendLine(":")
                 .Append("  Base unit: ")
                 .Append(UnitDictionary.TryGetValue(_unitPrefabIndex, out var baseUnitName) ? baseUnitName : "Unknown")
@@ -159,6 +194,8 @@ namespace AseCore.ReflectionWrappers
                 .AppendLine()
                 .Append("  AI mode: ")
                 .Append(_aiMode)
+                .Append(" / AI")
+                .Append((int)_aiMode + 1)
                 .AppendLine()
                 .Append("  Detection distance: ")
                 .Append(_detectionDistance)
@@ -176,28 +213,60 @@ namespace AseCore.ReflectionWrappers
             if (Attachments.Count == 0) return sb.ToString();
 
             sb.AppendLine().Append("  Attachments:");
-            var indexLeftPad = Attachments.Count.DigitCount();
-            for (var index = 0; index < Attachments.Count; index++)
-                sb.AppendLine()
-                    .Append("   [")
-                    .Append((index + 1).ToString().PadLeft(indexLeftPad))
-                    .Append("] ")
-                    .Append(Attachments[index]);
+            foreach (var attachment in Attachments)
+                sb.AppendLine().Append("   - ").Append(attachment);
 
             return sb.ToString();
         }
 
-        internal string PropertiesAsString()
+        public string ToDebugString()
         {
-            var sb = new StringBuilder()
-                .AppendLine("properties: {");
-            foreach (var kv in _properties)
-                sb.Append("  ")
-                    .Append(kv.Key)
-                    .Append(": ")
-                    .Append(kv.Value)
+            var sb = new StringBuilder(Type.FullName)
+                .AppendLine(" {")
+                .Append("  prefabName: ")
+                .Append(Name)
+                .AppendLine(",")
+                .Append("  animalRecord: ")
+                .Append(_animalRecord.Type.FullName)
+                .AppendLine(" {")
+                .Append("    unitPrefabIndex: ")
+                .Append(_unitPrefabIndex)
+                .AppendLine(",")
+                .Append("    positionX: ")
+                .Append(Position.X)
+                .AppendLine(",")
+                .Append("    positionY: ")
+                .Append(Position.Y)
+                .AppendLine(",")
+                .Append("    positionZ: ")
+                .Append(Position.Z)
+                .AppendLine(",")
+                .Append("    quaternionX: ")
+                .Append(Quaternion.X)
+                .AppendLine(",")
+                .Append("    quaternionY: ")
+                .Append(Quaternion.Y)
+                .AppendLine(",")
+                .Append("    quaternionZ: ")
+                .Append(Quaternion.Z)
+                .AppendLine(",")
+                .Append("    quaternionW: ")
+                .Append(Quaternion.W)
+                .AppendLine(",")
+                .AppendLine("    properties: Dictionary<int, int> {");
+            foreach (var property in _properties)
+                sb.Append("      ")
+                    .Append(property.Key)
+                    .Append(" => ")
+                    .Append(property.Value)
                     .AppendLine(",");
-            return sb.Append("}").ToString();
+            return sb.AppendLine("    },")
+                .Append("    team: ")
+                .Append(_team)
+                .AppendLine(",")
+                .AppendLine("  },")
+                .Append("}")
+                .ToString();
         }
 
         private static object CheckIfInstanceIsWap(object instance)
@@ -350,9 +419,10 @@ namespace AseCore.ReflectionWrappers
 
         public class Attachment
         {
-            private static readonly Dictionary<int, string> AttachmentDictionary;
+            public const int FirstKey = 100;
+            public const int KeyOffset = 11;
 
-            private static readonly int[] RemovedIds = { 4193, 4194, 4195 };
+            private static readonly Dictionary<int, string> AttachmentDictionary;
 
             private readonly Dictionary<int, int> _properties;
 
@@ -390,7 +460,9 @@ namespace AseCore.ReflectionWrappers
                 }
             }
 
-            public bool Removed => RemovedIds.Contains(_id);
+            public string Name => AttachmentDictionary.TryGetValue(_id, out var name) ? name : "Unknown attachment";
+
+            public bool Removed => _id == 4193 || _id == 4194 || _id == 4195;
 
             public decimal SizeFactor
             {
@@ -417,7 +489,7 @@ namespace AseCore.ReflectionWrappers
                 if (Removed) return "Removed attachment";
 
                 return new StringBuilder()
-                    .Append(AttachmentDictionary.TryGetValue(_id, out var name) ? name : "Unknown attachment")
+                    .Append(Name)
                     .Append(" (")
                     .Append(_id)
                     .Append("): ")

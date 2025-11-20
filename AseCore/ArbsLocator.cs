@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices;
@@ -133,7 +132,7 @@ namespace AseCore
             {
                 if (GameDirectory == null) throw new Exception("Set the GameDirectory first!");
                 if (_assemblyDllPath != null) return _assemblyDllPath;
-                
+
                 _assemblyDllPath = Path.Combine(
                     GameDirectory,
                     "Animal Revolt Battle Simulator_Data",
@@ -144,7 +143,7 @@ namespace AseCore
             }
         }
 
-        public static List<WapFile> GetAllWeaponisedAnimalPrefabFiles()
+        public static WapFile[] GetAllWeaponisedAnimalPrefabFiles()
         {
             if (DataDirectory == null) throw new InvalidOperationException("Set the data directory first!");
 
@@ -156,7 +155,7 @@ namespace AseCore
                 .Select(Path.GetFileName)
                 .OrderBy(file => file)
                 .Select(WapFile.FromFile)
-                .ToList();
+                .ToArray();
         }
     }
 
@@ -164,7 +163,7 @@ namespace AseCore
     {
         private const string Prefix = "WEP_ANIM_PREF_";
 
-        private WapFile(string prefabName, string timestamp)
+        public WapFile(string prefabName, string timestamp)
         {
             if (string.IsNullOrWhiteSpace(prefabName))
                 throw new ArgumentException("Prefab name cannot be empty!", nameof(prefabName));

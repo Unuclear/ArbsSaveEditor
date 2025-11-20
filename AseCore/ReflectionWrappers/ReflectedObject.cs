@@ -7,14 +7,14 @@ namespace AseCore.ReflectionWrappers
 {
     public class ReflectedObject
     {
-        public object Instance { get; }
-        protected Type Type { get; }
-
-        public ReflectedObject(object instance)
+        protected ReflectedObject(object instance)
         {
             Instance = instance ?? throw new ArgumentNullException(nameof(instance));
             Type = instance.GetType();
         }
+
+        protected internal object Instance { get; }
+        protected internal Type Type { get; }
 
         private FieldInfo GetFieldInfo(string name)
         {
@@ -30,14 +30,14 @@ namespace AseCore.ReflectionWrappers
         {
             var fieldInfo = GetFieldInfo(fieldName);
             if (fieldInfo != null) return fieldInfo.GetValue(Instance);
-            
+
             var propertyInfo = GetPropertyInfo(fieldName);
             if (propertyInfo != null) return propertyInfo.GetValue(Instance);
-            
+
             throw new MissingMemberException(fieldName, fieldName);
         }
 
-        public ReflectedObject GetAsReflectedObject(string fieldName)
+        protected ReflectedObject GetAsReflectedObject(string fieldName)
         {
             return new ReflectedObject(Get(fieldName));
         }
@@ -50,7 +50,7 @@ namespace AseCore.ReflectionWrappers
                 fieldInfo.SetValue(Instance, value);
                 return;
             }
-            
+
             var propertyInfo = GetPropertyInfo(fieldName);
             if (propertyInfo != null) propertyInfo.SetValue(Instance, value);
             else throw new MissingMemberException(fieldName, fieldName);
