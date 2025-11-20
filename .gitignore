@@ -1,0 +1,61 @@
+# NuGet packages
+nupkg/
+/packages/
+project.lock.json
+
+# Build results
+[Dd]ebug/
+[Dd]ebugPublic/
+[Rr]elease/
+[Rr]eleases/
+x64/
+x86/
+build/
+bld/
+[Bb]in/
+[Oo]bj/
+[Oo]ut/
+msbuild.log
+msbuild.err
+msbuild.wrn
+
+# Rider
+.idea/
+/_ReSharper.Caches/
+*.iml
+
+# Visual Studio
+.vs/
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Visual Studio Code
+.vscode/
+*.vsix
+
+# Swap Files
+*~
+*.swp
+.*.kate-swp
+.swp.*
+
+# OS clutter
+# Linux
+.directory
+.fuse_hidden*
+.nfs*
+# macOS
+._*
+.AppleDouble
+.DS_Store
+.LSOverride
+Icon^M
+# Windows
+[Dd]esktop.ini
+Thumbs.db
+Thumbs.db:encryptable
+ehthumbs.db
+ehthumbs_vista.db
