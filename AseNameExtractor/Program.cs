@@ -19,7 +19,9 @@ namespace AseNameExtractor
                 gameDirectory = ArbsLocator.FindGameDirectory();
                 if (gameDirectory == null)
                 {
-                    Console.WriteLine($"{ArbsLocator.GameName} not found. Please use --game-dir \"path/to/game/directory\" to specify the location.");
+                    Console.WriteLine(
+                        $"{ArbsLocator.GameName} not found. Please use --game-dir \"path/to/game/directory\" to specify the location."
+                    );
                     return 1;
                 }
             }

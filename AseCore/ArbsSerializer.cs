@@ -20,7 +20,10 @@ namespace AseCore
             }
             catch (Exception e)
             {
-                throw new SerializationException($"Could not serialize object of type {o.GetType().FullName} to file {path}", e);
+                throw new SerializationException(
+                    $"Could not serialize object of type {o.GetType().FullName} to file {path}",
+                    e
+                );
             }
         }
 
@@ -42,7 +45,9 @@ namespace AseCore
             var deserializedType = ArbsAsmLoader.GetArbsType(type);
             if (deserializedType.IsInstanceOfType(deserialized)) return deserialized;
 
-            throw new InvalidDataException($"Deserialized object is of type {deserializedType.FullName}, but of {deserialized.GetType().FullName}");
+            throw new InvalidDataException(
+                $"Deserialized object is of type {deserializedType.FullName}, but of {deserialized.GetType().FullName}"
+            );
         }
     }
 }

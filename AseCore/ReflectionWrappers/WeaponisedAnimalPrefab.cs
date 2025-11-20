@@ -12,11 +12,11 @@ namespace AseCore.ReflectionWrappers
         private static readonly Dictionary<int, string> UnitDictionary;
 
         private readonly ReflectedObject _animalRecord;
+        private readonly Dictionary<int, int> _properties;
 
         private string _name;
         private int _unitPrefabIndex;
         private int _team;
-        private readonly Dictionary<int, int> _properties;
         private PrefabAiMode _aiMode;
         private int _detectionDistance;
         private decimal _healthFactor;

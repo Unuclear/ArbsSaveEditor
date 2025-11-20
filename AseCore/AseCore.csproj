@@ -76,7 +76,7 @@
         <Compile Include="ArbsLocator.cs"/>
         <Compile Include="ArbsSerializer.cs"/>
         <Compile Include="CommandLine.cs"/>
-        <Compile Include="Extensions\IntExtensions.cs" />
+        <Compile Include="Extensions\IntExtensions.cs"/>
         <Compile Include="Program.cs"/>
         <Compile Include="Properties\AssemblyInfo.cs"/>
         <Compile Include="ReflectionWrappers\ReflectedObject.cs"/>

@@ -39,7 +39,9 @@ namespace AseCore
                     case "back":
                         return -1;
                     case "help":
-                        Console.WriteLine("Type in a number corresponding to a menu entry above to traverse the menu, \"back\" to leave menu and \"exit\" to exit the program.");
+                        Console.WriteLine(
+                            "Type in a number corresponding to a menu entry above to traverse the menu, \"back\" to leave menu and \"exit\" to exit the program."
+                        );
                         continue;
                 }
 

@@ -26,7 +26,9 @@ namespace AseCore
                 gameDirectory = ArbsLocator.FindGameDirectory();
                 if (gameDirectory == null)
                 {
-                    Console.WriteLine($"{ArbsLocator.GameName} not found. Please use --game-dir \"path/to/game/directory\" to specify the location.");
+                    Console.WriteLine(
+                        $"{ArbsLocator.GameName} not found. Please use --game-dir \"path/to/game/directory\" to specify the location."
+                    );
                     return 1;
                 }
             }
@@ -48,7 +50,9 @@ namespace AseCore
                 dataDirectory = ArbsLocator.FindDataDirectory();
                 if (dataDirectory == null)
                 {
-                    Console.WriteLine($"{ArbsLocator.GameName} data directory not found. Please use --data-dir \"path/to/data/directory\" to specify the location.");
+                    Console.WriteLine(
+                        $"{ArbsLocator.GameName} data directory not found. Please use --data-dir \"path/to/data/directory\" to specify the location."
+                    );
                     return 4;
                 }
             }
@@ -163,14 +167,20 @@ namespace AseCore
                                 }
 
                                 if (string.IsNullOrEmpty(newName))
+                                {
                                     Console.WriteLine("No name specified.");
+                                }
                                 else if (newName == prefab.Name)
                                 {
                                     Console.WriteLine("The new name is the same as the old one.");
                                     repeat = false;
                                 }
                                 else if (!newName.All(char.IsLetterOrDigit))
-                                    Console.WriteLine("The new name is invalid. Only alphanumeric characters are allowed.");
+                                {
+                                    Console.WriteLine(
+                                        "The new name is invalid. Only alphanumeric characters are allowed."
+                                    );
+                                }
                                 else
                                 {
                                     prefab.Name = newName;
@@ -178,6 +188,7 @@ namespace AseCore
                                     repeat = false;
                                 }
                             }
+
                             break;
                         }
                         case 3: // Change team
@@ -199,7 +210,9 @@ namespace AseCore
                                 }
 
                                 if (newTeam < 1 || newTeam > 7)
+                                {
                                     Console.WriteLine("Please enter a team number between 1 and 7.");
+                                }
                                 else
                                 {
                                     if (newTeam != prefab.Team)
@@ -207,9 +220,11 @@ namespace AseCore
                                         prefab.Team = newTeam;
                                         hasChanges = true;
                                     }
+
                                     repeat = false;
                                 }
                             }
+
                             break;
                         }
                         case 4: // Change AI mode
@@ -217,7 +232,9 @@ namespace AseCore
                             var repeat = true;
                             while (repeat)
                             {
-                                Console.Write($"\nCurrent AI mode: {prefab.AiMode}\nNew AI mode (Default, Idle, Guard, AI1, AI2, AI3): ");
+                                Console.Write(
+                                    $"\nCurrent AI mode: {prefab.AiMode}\nNew AI mode (Default, Idle, Guard, AI1, AI2, AI3): "
+                                );
                                 var newAiModeStr = Console.ReadLine()?.Trim().ToLower();
 
                                 WeaponisedAnimalPrefab.PrefabAiMode newAiMode;
@@ -253,8 +270,10 @@ namespace AseCore
                                     prefab.AiMode = newAiMode;
                                     hasChanges = true;
                                 }
+
                                 repeat = false;
                             }
+
                             break;
                         }
                         case 5: // Change detection distance
@@ -276,6 +295,7 @@ namespace AseCore
                                 prefab.DetectionDistance = newDetectionDistance;
                                 hasChanges = true;
                             }
+
                             break;
                         }
                         case 6: // Change health factor
@@ -297,6 +317,7 @@ namespace AseCore
                                 prefab.HealthFactor = newHealthFactor;
                                 hasChanges = true;
                             }
+
                             break;
                         }
                         case 7: // Change attack factor
@@ -318,6 +339,7 @@ namespace AseCore
                                 prefab.AttackFactor = newAttackFactor;
                                 hasChanges = true;
                             }
+
                             break;
                         }
                         case 8: // Manage attachments submenu
@@ -396,6 +418,7 @@ namespace AseCore
                                                 singleAttachment.AttackFactor = newAttackFactor;
                                                 hasChanges = true;
                                             }
+
                                             break;
                                         }
 
@@ -444,8 +467,10 @@ namespace AseCore
                                                 attachment.AttackFactor = newAttackFactor;
                                                 hasChanges = true;
                                             }
+
                                             repeat = false;
                                         }
+
                                         break;
                                     }
                                     case 1: // Change attack factor of multiple attachments of the same type
@@ -489,18 +514,17 @@ namespace AseCore
                                                 attachment.AttackFactor = newAttackFactor;
                                                 hasChanges = true;
                                             }
+
                                             break;
                                         }
 
                                         indexLeftPad = activeAttachments.Length.DigitCount();
                                         foreach (var attachmentType in attachmentTypes)
-                                        {
                                             prompt.Append(" (")
                                                 .Append(attachmentType.Key.ToString().PadLeft(indexLeftPad))
                                                 .Append(") ")
                                                 .Append(attachmentType.First().Name)
                                                 .AppendLine();
-                                        }
 
                                         prompt.AppendLine()
                                             .Append("Type ID followed by the new attack factor: ");
@@ -541,6 +565,7 @@ namespace AseCore
 
                                             repeat = false;
                                         }
+
                                         break;
                                     }
                                     case 2: // Change attack factor of all attachments
@@ -606,7 +631,8 @@ namespace AseCore
                             if (!hasChanges) goto default;
 
                             var copyFile = true;
-                            if (prefab.Name == selected.PrefabName) {
+                            if (prefab.Name == selected.PrefabName)
+                            {
                                 Console.Write("Do you want to overwrite the prefab file? (y/n): ");
                                 copyFile = char.ToLower(Console.ReadKey().KeyChar) != 'y';
                                 Console.WriteLine();
@@ -629,7 +655,9 @@ namespace AseCore
                                 savePath = Path.Combine(ArbsLocator.DataDirectory, saveFile.ToFileName());
                             }
                             else
+                            {
                                 savePath = selectedPath;
+                            }
 
                             // Save changes
                             try
@@ -649,12 +677,17 @@ namespace AseCore
                                 if (File.Exists(imageSourcePath))
                                     File.Copy(imageSourcePath, $"{savePath}-IMEG.jpg");
                                 else
-                                    Console.WriteLine("The preview image could not be found. Make sure to copy it manually.");
+                                    Console.WriteLine(
+                                        "The preview image could not be found. Make sure to copy it manually."
+                                    );
 
                                 Console.Write($"{prefab.Name} was saved at {savePath} ...");
                             }
                             else
+                            {
                                 Console.Write($"{savePath} was overwritten...");
+                            }
+
                             Console.ReadLine();
 
                             repeatEditMenu = false;
