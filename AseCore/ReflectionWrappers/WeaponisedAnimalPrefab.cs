@@ -1,13 +1,18 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Linq;
 using System.Text;
+using System.Text.Json;
 
 namespace AseCore.ReflectionWrappers
 {
     public class WeaponisedAnimalPrefab : ReflectedObject
     {
+        private static readonly Dictionary<int, string> UnitDictionary;
+
         private readonly ReflectedObject _animalRecord;
-        
+
         private string _name;
         private int _unitPrefabIndex;
         private int _team;
@@ -17,6 +22,14 @@ namespace AseCore.ReflectionWrappers
         private decimal _healthFactor;
         private decimal _attackFactor;
         private decimal _sizeFactor;
+
+        static WeaponisedAnimalPrefab()
+        {
+            using (var fs = File.OpenRead("Dictionaries/unit-dictionary.json"))
+            {
+                UnitDictionary = JsonSerializer.Deserialize<Dictionary<int, string>>(fs);
+            }
+        }
 
         public WeaponisedAnimalPrefab(object instance) : base(CheckIfInstanceIsWap(instance))
         {
@@ -37,9 +50,7 @@ namespace AseCore.ReflectionWrappers
 
             Attachments = new List<Attachment>();
             for (var key = 100; _properties.ContainsKey(key); key += 11)
-            {
                 Attachments.Add(new Attachment(_properties, key));
-            }
         }
 
         public string Name
@@ -124,17 +135,19 @@ namespace AseCore.ReflectionWrappers
                 _sizeFactor = value;
             }
         }
-        
+
         public List<Attachment> Attachments { get; }
-        
+
         public override string ToString()
         {
             var sb = new StringBuilder("[WeaponisedAnimalPrefab] ")
-                .Append(Name)
+                .Append(_name)
                 .AppendLine(":")
-                .Append("  Base unit index: ")
-                .Append(UnitPrefabIndex)
-                .AppendLine()
+                .Append("  Base unit: ")
+                .Append(UnitDictionary.TryGetValue(_unitPrefabIndex, out var baseUnitName) ? baseUnitName : "Unknown")
+                .Append(" (")
+                .Append(_unitPrefabIndex)
+                .AppendLine(")")
                 .Append("  Position: ")
                 .Append(Position)
                 .AppendLine()
@@ -142,30 +155,34 @@ namespace AseCore.ReflectionWrappers
                 .Append(Quaternion)
                 .AppendLine()
                 .Append("  Team: ")
-                .Append(Team)
+                .Append(_team)
                 .AppendLine()
                 .Append("  AI mode: ")
-                .Append(AiMode)
+                .Append(_aiMode)
                 .AppendLine()
                 .Append("  Detection distance: ")
-                .Append(DetectionDistance)
+                .Append(_detectionDistance)
                 .AppendLine()
-                .Append("  Health factor: ")
-                .Append(HealthFactor)
-                .AppendLine()
-                .Append("  Attack factor: ")
-                .Append(AttackFactor)
-                .AppendLine()
-                .Append("  Size factor: ")
-                .Append(SizeFactor);
+                .Append("  Health: ")
+                .Append(_healthFactor)
+                .AppendLine("x")
+                .Append("  Attack: ")
+                .Append(_attackFactor)
+                .AppendLine("x")
+                .Append("  Size: ")
+                .Append(_sizeFactor)
+                .Append("x");
 
             if (Attachments.Count == 0) return sb.ToString();
-            
-            sb.AppendLine().Append(" Attachments:");
-            foreach (var attachment in Attachments)
-            {
-                sb.AppendLine().Append("   - ").Append(attachment);
-            }
+
+            sb.AppendLine().Append("  Attachments:");
+            var indexLeftPad = Attachments.Count.DigitCount();
+            for (var index = 0; index < Attachments.Count; index++)
+                sb.AppendLine()
+                    .Append("   [")
+                    .Append((index + 1).ToString().PadLeft(indexLeftPad))
+                    .Append("] ")
+                    .Append(Attachments[index]);
 
             return sb.ToString();
         }
@@ -175,13 +192,11 @@ namespace AseCore.ReflectionWrappers
             var sb = new StringBuilder()
                 .AppendLine("properties: {");
             foreach (var kv in _properties)
-            {
                 sb.Append("  ")
                     .Append(kv.Key)
                     .Append(": ")
                     .Append(kv.Value)
                     .AppendLine(",");
-            }
             return sb.Append("}").ToString();
         }
 
@@ -249,11 +264,11 @@ namespace AseCore.ReflectionWrappers
             public override string ToString()
             {
                 return new StringBuilder("(x: ")
-                    .Append(X)
+                    .Append(_x)
                     .Append(", y: ")
-                    .Append(Y)
+                    .Append(_y)
                     .Append(", z: ")
-                    .Append(Z)
+                    .Append(_z)
                     .Append(")")
                     .ToString();
             }
@@ -317,35 +332,47 @@ namespace AseCore.ReflectionWrappers
                     _w = value;
                 }
             }
-            
+
             public override string ToString()
             {
                 return new StringBuilder("(x: ")
-                    .Append(X)
+                    .Append(_x)
                     .Append(", y: ")
-                    .Append(Y)
+                    .Append(_y)
                     .Append(", z: ")
-                    .Append(Z)
+                    .Append(_z)
                     .Append(", w: ")
-                    .Append(W)
+                    .Append(_w)
                     .Append(")")
                     .ToString();
             }
         }
-        
+
         public class Attachment
         {
+            private static readonly Dictionary<int, string> AttachmentDictionary;
+
+            private static readonly int[] RemovedIds = { 4193, 4194, 4195 };
+
             private readonly Dictionary<int, int> _properties;
 
             private int _id;
             private decimal _sizeFactor;
             private decimal _attackFactor;
 
+            static Attachment()
+            {
+                using (var fs = File.OpenRead("Dictionaries/attachment-dictionary.json"))
+                {
+                    AttachmentDictionary = JsonSerializer.Deserialize<Dictionary<int, string>>(fs);
+                }
+            }
+
             public Attachment(Dictionary<int, int> properties, int key)
             {
                 _properties = properties;
                 Key = key;
-                
+
                 _id = _properties[Key];
                 _sizeFactor = _properties[Key + 1] / 100_000m;
                 _attackFactor = _properties[Key + 2] / 100_000m;
@@ -362,6 +389,8 @@ namespace AseCore.ReflectionWrappers
                     _id = value;
                 }
             }
+
+            public bool Removed => RemovedIds.Contains(_id);
 
             public decimal SizeFactor
             {
@@ -383,22 +412,19 @@ namespace AseCore.ReflectionWrappers
                 }
             }
 
-            private int Index => (Key - 89) / 11;
-
             public override string ToString()
             {
-                var sb = new StringBuilder("Attachment #")
-                    .Append(Index)
-                    .Append(" – ");
-                
-                if (Id == 4193 || Id == 4194) return sb.Append("deleted (").Append(Id).Append(')').ToString();
-                
-                return sb.Append("Id: ")
-                    .Append(Id)
-                    .Append(", SizeFactor: ")
-                    .Append(SizeFactor)
-                    .Append(", AttackFactor: ")
-                    .Append(AttackFactor)
+                if (Removed) return "Removed attachment";
+
+                return new StringBuilder()
+                    .Append(AttachmentDictionary.TryGetValue(_id, out var name) ? name : "Unknown attachment")
+                    .Append(" (")
+                    .Append(_id)
+                    .Append("): ")
+                    .Append(_sizeFactor)
+                    .Append("x size, ")
+                    .Append(_attackFactor)
+                    .Append("x attack")
                     .ToString();
             }
         }

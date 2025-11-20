@@ -12,9 +12,9 @@ namespace AseCore
         private const string GameId = "1215390";
         public const string GameName = "Animal Revolt Battle Simulator";
 
-        public static string GameDirectory { get; set; }
+        private static string _assemblyDllPath;
 
-        public static string DataDirectory { get; set; }
+        public static string GameDirectory { get; set; }
 
         public static string FindGameDirectory()
         {
@@ -64,6 +64,8 @@ namespace AseCore
 
             return null;
         }
+
+        public static string DataDirectory { get; set; }
 
         public static string FindDataDirectory()
         {
@@ -123,6 +125,23 @@ namespace AseCore
             }
 
             return null;
+        }
+
+        public static string AssemblyDllPath
+        {
+            get
+            {
+                if (GameDirectory == null) throw new Exception("Set the GameDirectory first!");
+                if (_assemblyDllPath != null) return _assemblyDllPath;
+                
+                _assemblyDllPath = Path.Combine(
+                    GameDirectory,
+                    "Animal Revolt Battle Simulator_Data",
+                    "Managed",
+                    "Assembly-CSharp.dll"
+                );
+                return _assemblyDllPath;
+            }
         }
 
         public static List<WapFile> GetAllWeaponisedAnimalPrefabFiles()

@@ -9,7 +9,7 @@ namespace AseCore
     {
         public static int Main(string[] args)
         {
-            var gameDirectory = GetCommandLineArgument("--game-dir", args);
+            var gameDirectory = CommandLine.GetOption("--game-dir", args);
             if (string.IsNullOrEmpty(gameDirectory))
             {
                 gameDirectory = ArbsLocator.FindGameDirectory();
@@ -31,7 +31,7 @@ namespace AseCore
 
             if (!ArbsAsmLoader.Load()) return 3;
 
-            var dataDirectory = GetCommandLineArgument("--data-dir", args);
+            var dataDirectory = CommandLine.GetOption("--data-dir", args);
             if (string.IsNullOrEmpty(dataDirectory))
             {
                 dataDirectory = ArbsLocator.FindDataDirectory();
@@ -57,14 +57,14 @@ namespace AseCore
                 var numberOfWapFiles = wapFiles.Count;
                 if (numberOfWapFiles == 0)
                 {
-                    Console.WriteLine("No Weaponised animal prefabs were found.");
+                    Console.WriteLine("No weaponised animal prefabs were found.");
                     return 0;
                 }
 
-                var numberOfWapFilesDigitCount = GetDigitCount(numberOfWapFiles);
-                Console.WriteLine("Select a Weaponised animal prefab:");
-                for (var i = 0; i < numberOfWapFiles; i++)
-                    Console.WriteLine($" {(i + 1).ToString().PadLeft(numberOfWapFilesDigitCount)}. {wapFiles[i]}");
+                var indexLeftPad = numberOfWapFiles.DigitCount();
+                Console.WriteLine("Select a weaponised animal prefab:");
+                for (var index = 0; index < numberOfWapFiles; index++)
+                    Console.WriteLine($" {(index + 1).ToString().PadLeft(indexLeftPad)}. {wapFiles[index]}");
 
                 Console.Write("\nEnter number: ");
                 var isValidChoice = false;
@@ -107,20 +107,6 @@ namespace AseCore
                     return 6;
                 }
             }
-        }
-
-        private static string GetCommandLineArgument(string argument, string[] args)
-        {
-            for (var i = 0; i < args.Length; i++)
-                if (args[i] == argument && i + 1 < args.Length)
-                    return args[i + 1];
-            return null;
-        }
-
-        private static int GetDigitCount(int number)
-        {
-            var strlen = number.ToString().Length;
-            return number < 0 ? strlen - 1 : strlen;
         }
     }
 }

@@ -10,13 +10,7 @@ namespace AseCore
 
         public static bool Load()
         {
-            var path = Path.Combine(
-                ArbsLocator.GameDirectory,
-                "Animal Revolt Battle Simulator_Data",
-                "Managed",
-                "Assembly-CSharp.dll"
-            );
-
+            var path = ArbsLocator.AssemblyDllPath;
             if (!File.Exists(path))
             {
                 Console.WriteLine($"{ArbsLocator.GameName} assembly could not be found: {path}");
