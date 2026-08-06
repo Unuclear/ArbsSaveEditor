@@ -28,7 +28,7 @@ namespace AseCore
             "Change attack factor of a single attachment",
             "Change attack factor of all attachments of the same type",
             "Change attack factor of all attachments",
-            "Clean up removed attachments",
+            "Clean up removed attachments (UNSAFE)",
             "Return"
         };
 
@@ -894,6 +894,19 @@ namespace AseCore
                         if (activeAttachments.Length == attachments.Count)
                         {
                             Console.Write($"{wap.Name} has no removed attachments...");
+                            Console.ReadLine();
+                            break;
+                        }
+
+                        Console.WriteLine(
+                            "WARNING: THIS OPERATION IS UNSAFE AND MAY LEAD TO YOUR PREFAB BECOMING UNPLACEABLE!"
+                        );
+                        Console.Write("Do you still want to proceed? (y/n): ");
+                        var cancel = char.ToLower(Console.ReadKey().KeyChar) != 'y';
+                        Console.WriteLine();
+                        if (cancel)
+                        {
+                            Console.Write("No attachments removed. Press any key to continue...");
                             Console.ReadLine();
                             break;
                         }
