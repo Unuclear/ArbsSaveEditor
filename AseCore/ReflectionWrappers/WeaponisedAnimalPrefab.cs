@@ -465,7 +465,8 @@ namespace AseCore.ReflectionWrappers
 
             public string Name => AttachmentDictionary.TryGetValue(_id, out var name) ? name : "Unknown attachment";
 
-            public bool Removed => _id == 4193 || _id == 4194 || _id == 4195;
+            public bool Removed =>
+                _id == 4193 || _id == 4194 || _id == 4195 || _id == 4243 || _id == 4244 || _id == 4296 || _id == 4350;
 
             public decimal SizeFactor
             {
